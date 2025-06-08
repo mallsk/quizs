@@ -1,6 +1,8 @@
 "use client";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Button } from "./ui/button";
+import { Redirect } from "./Redirect";
 
 type ApiResponse = {
   user: {
@@ -12,6 +14,7 @@ type ApiResponse = {
 
 export default function Details() {
 const [user, setUser] = useState<ApiResponse["user"] | null>(null);
+const [push,setPush] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,7 +29,10 @@ const [user, setUser] = useState<ApiResponse["user"] | null>(null);
     };
 
     fetchData();
-  }, []); // ✅ run once on mount
+  }, []);
+  if(push){
+    return <Redirect to={"/dashboard/quiz"} />
+  }
 
   return (
   <div>
@@ -36,6 +42,9 @@ const [user, setUser] = useState<ApiResponse["user"] | null>(null);
         {user.image && <img src={user.image} alt="Profile" />}
       </>
     )}
+    <Button onClick={()=>{
+      setPush(true);
+    }}>Quiz</Button>
   </div>
 );
 }

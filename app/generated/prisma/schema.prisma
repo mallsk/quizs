@@ -16,3 +16,13 @@ model User {
   image     String?
   createdAt DateTime @default(now())
 }
+
+model QuizAttempt {
+  id          Int      @id @default(autoincrement())
+  userId      String
+  topic       String
+  questions   Json // stores full questions JSON with correct answers
+  userAnswers Json // stores user's selected answers, keyed by question index or id
+  score       Int
+  createdAt   DateTime @default(now())
+}

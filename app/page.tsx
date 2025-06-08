@@ -3,7 +3,6 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import LoginButton from "@/components/LoginButton";
 import type { Session } from "next-auth";
-
 export default async function Home() {
  
   const session: Session | null = await getServerSession(authOptions);
