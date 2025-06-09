@@ -28,7 +28,7 @@ const QuizModel = ({ topic, onLoaded }: QuizModelProps) => {
   const [timeLeft, setTimeLeft] = useState(QUIZ_TIME_SECONDS);
   const [push, setPush] = useState(false);
   const [showReadyMessage, setShowReadyMessage] = useState(false);
-
+  const [submitted, setSubmitted] = useState(false);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -99,7 +99,10 @@ useEffect(() => {
   };
 
   const handleSubmit = async () => {
+  if (submitted) return; // Prevent double submission
+  setSubmitted(true);
   setShowResults(true);
+
   if (timerRef.current) clearInterval(timerRef.current);
 
   // Calculate score
@@ -108,7 +111,6 @@ useEffect(() => {
   ).length;
 
   try {
-    // Send quiz result to backend API
     await axios.post(
       "/api/user/quiz/submit",
       {
@@ -119,12 +121,11 @@ useEffect(() => {
       },
       { withCredentials: true }
     );
-    
   } catch (error) {
     console.error("Failed to save quiz results", error);
-    
   }
 };
+
 
   const getAnswerColor = (optionKey: string) => {
     if (!showResults) return "";

@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
   }
 
   const { topic } = await req.json();
@@ -15,7 +15,6 @@ export async function POST(req: NextRequest) {
   if (!topic) {
     return NextResponse.json({ error: "Topic is required" }, { status: 400 });
   }
-
   try {
     let result = await chat(topic);
 

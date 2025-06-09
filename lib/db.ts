@@ -17,6 +17,14 @@ interface QuizAttemptData {
   score: number;
 }
 
+// interface SubscriptionData {
+//   userId: string;
+//   plan: string;       // e.g., "free", "premium"
+//   startDate: Date;
+//   endDate: Date;     // null for free plan
+//   isActive: boolean; // true if the subscription is active
+// }
+
 export async function findOrCreateUser(user: UserData) {
   const existingUser = await prisma.user.findUnique({
     where: { googleId: user.googleId },
@@ -37,10 +45,19 @@ export async function findOrCreateUser(user: UserData) {
 
   return newUser;
 }
-
+export async function findUser(googleId:string){
+  const user = await prisma.user.findUnique({
+    where:{googleId: googleId}
+  })
+  if(user){
+    return user;
+  }
+  if(!user){
+    return null
+  }
+}
 export async function createQuizAttempt(data: QuizAttemptData) {
   const { userId, topic, questions, userAnswers, score } = data;
-
   const quizAttempt = await prisma.quizAttempt.create({
     data: {
       userId,
@@ -50,6 +67,12 @@ export async function createQuizAttempt(data: QuizAttemptData) {
       score,
     },
   });
-
   return quizAttempt;
+}
+
+export async function getQuiz(userId:string){
+  const quizs = await prisma.quizAttempt.findMany({
+    where:{userId}
+  })
+  return quizs
 }

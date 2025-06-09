@@ -15,6 +15,7 @@ type ApiResponse = {
 export default function Details() {
 const [user, setUser] = useState<ApiResponse["user"] | null>(null);
 const [push,setPush] = useState(false);
+const [learning,setLearning] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,7 +34,9 @@ const [push,setPush] = useState(false);
   if(push){
     return <Redirect to={"/dashboard/quiz"} />
   }
-
+  if(learning){
+    return <Redirect to={"/dashboard/learning"}/>
+  }
   return (
   <div>
     {user && (
@@ -45,6 +48,9 @@ const [push,setPush] = useState(false);
     <Button onClick={()=>{
       setPush(true);
     }}>Quiz</Button>
+    <Button onClick={()=>{
+      setLearning(true);
+    }}>Learn</Button>
   </div>
 );
 }

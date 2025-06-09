@@ -1,27 +1,22 @@
 "use client";
-import QuizModel from "@/components/QuizModel";
+import Learning from "@/components/Learning";
 import { useState } from "react";
 
-export default function Quiz() {
-  const [topic, setTopic] = useState("");
-  const [submittedTopic, setSubmittedTopic] = useState("");
-  const [loading, setLoading] = useState(false);
+export default function LearningPage(){
+    const [topic, setTopic] = useState("");
+    const [submittedTopic, setSubmittedTopic] = useState("");
+    const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (topic.trim() !== "") {
       setLoading(true);     // show loader
       setSubmittedTopic(topic);
     }
   };
-
-  const onQuizLoaded = () => {
-    setLoading(false);     // hide loader & form
-  };
-
-  return (
-    <div className="p-4">
-      {!submittedTopic && (
+    return (
+        <div className="p-4">
+        {!submittedTopic && (
         <form onSubmit={handleSubmit} className="mb-4">
           <input
             type="text"
@@ -34,15 +29,14 @@ export default function Quiz() {
             type="submit"
             className="bg-blue-600 text-white px-4 py-1 rounded"
           >
-            Generate Quiz
+            Learn
           </button>
         </form>
       )}
       
       {submittedTopic && (
-        <QuizModel topic={submittedTopic} onLoaded={onQuizLoaded} />
+        <Learning topic={submittedTopic}/>
       )}
     </div>
-  );
+    )
 }
-
