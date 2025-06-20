@@ -1,6 +1,4 @@
-import { PrismaClient } from "@/app/generated/prisma";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 type UserData = {
   googleId: string;
@@ -12,18 +10,10 @@ type UserData = {
 interface QuizAttemptData {
   userId: string;
   topic: string;
-  questions: any; // JSON object/array of questions with correct answers
-  userAnswers: any; // JSON object/array of user-selected answers
+  questions: any;
+  userAnswers: any;
   score: number;
 }
-
-// interface SubscriptionData {
-//   userId: string;
-//   plan: string;       // e.g., "free", "premium"
-//   startDate: Date;
-//   endDate: Date;     // null for free plan
-//   isActive: boolean; // true if the subscription is active
-// }
 
 export async function findOrCreateUser(user: UserData) {
   const existingUser = await prisma.user.findUnique({
@@ -34,7 +24,7 @@ export async function findOrCreateUser(user: UserData) {
     return existingUser;
   }
 
-  const newUser = await prisma.user.create({
+  return prisma.user.create({
     data: {
       googleId: user.googleId,
       name: user.name,
@@ -42,23 +32,18 @@ export async function findOrCreateUser(user: UserData) {
       image: user.image,
     },
   });
+}
 
-  return newUser;
-}
 export async function findUser(googleId: string) {
-  const user = await prisma.user.findUnique({
-    where: { googleId: googleId },
+  return prisma.user.findUnique({
+    where: { googleId },
   });
-  if (user) {
-    return user;
-  }
-  if (!user) {
-    return null;
-  }
 }
+
 export async function createQuizAttempt(data: QuizAttemptData) {
   const { userId, topic, questions, userAnswers, score } = data;
-  const quizAttempt = await prisma.quizAttempt.create({
+
+  return prisma.quizAttempt.create({
     data: {
       userId,
       topic,
@@ -67,12 +52,10 @@ export async function createQuizAttempt(data: QuizAttemptData) {
       score,
     },
   });
-  return quizAttempt;
 }
 
 export async function getQuiz(userId: string) {
-  const quizs = await prisma.quizAttempt.findMany({
+  return prisma.quizAttempt.findMany({
     where: { userId },
   });
-  return quizs;
 }
