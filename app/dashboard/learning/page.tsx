@@ -1,42 +1,135 @@
-"use client";
-import Learning from "@/components/Learning";
-import { useState } from "react";
+"use client"
+import Learning from "@/components/Learning"
+import type React from "react"
 
-export default function LearningPage(){
-    const [topic, setTopic] = useState("");
-    const [submittedTopic, setSubmittedTopic] = useState("");
-    const [loading, setLoading] = useState(false);
+import { useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { BookOpen, Sparkles, Brain, Loader2, ArrowRight, Target, Lightbulb } from "lucide-react"
 
-    const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+export default function LearningPage() {
+  const [topic, setTopic] = useState("")
+  const [submittedTopic, setSubmittedTopic] = useState("")
+  const [loading, setLoading] = useState(false)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
     if (topic.trim() !== "") {
-      setLoading(true);     // show loader
-      setSubmittedTopic(topic);
+      setLoading(true) // show loader
+      setSubmittedTopic(topic)
     }
+  }
+  const onTopicLoaded = () => {
+    setLoading(true); // hide loader & form
   };
-    return (
-        <div className="p-4">
+  
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pt-2">
+      <div className="container mx-auto px-4 py-8">
         {!submittedTopic && (
-        <form onSubmit={handleSubmit} className="mb-4">
-          <input
-            type="text"
-            placeholder="Enter quiz topic"
-            className="border px-2 py-1 rounded mr-2 w-72"
-            value={topic}
-            onChange={(e) => setTopic(e.target.value)}
-          />
-          <button
-            type="submit"
-            className="bg-blue-600 text-white px-4 py-1 rounded"
-          >
-            Learn
-          </button>
-        </form>
-      )}
-      
-      {submittedTopic && (
-        <Learning topic={submittedTopic}/>
-      )}
+          <div className="max-w-2xl mx-auto">
+            {/* Header Section */}
+            <div className="text-center mb-8">
+              <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-orange-400 to-pink-400 shadow-lg mb-6">
+                <BookOpen className="h-12 w-12 text-white" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                <span className="bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
+                  Start Learning
+                </span>
+              </h1>
+              <p className="text-xl text-gray-600 dark:text-gray-300 max-w-lg mx-auto">
+                Enter any topic and get comprehensive learning materials tailored to help you master the subject.
+              </p>
+            </div>
+
+            {/* Learning Generation Form */}
+            <Card className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-white/20 dark:border-gray-700/20 shadow-xl">
+              <CardHeader className="text-center pb-4">
+                <CardTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center justify-center gap-2">
+                  <Sparkles className="h-6 w-6 text-orange-500" />
+                  Create Learning Path
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="topic" className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                      Learning Topic
+                    </Label>
+                    <Input
+                      id="topic"
+                      type="text"
+                      placeholder="e.g., Machine Learning, Ancient History, Organic Chemistry, Python Programming..."
+                      className="w-full px-4 py-3 text-lg bg-white/80 dark:bg-gray-800/80 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:border-orange-400 dark:focus:border-orange-500 focus:ring-2 focus:ring-orange-200 dark:focus:ring-orange-800 transition-all duration-200"
+                      value={topic}
+                      onChange={(e) => setTopic(e.target.value)}
+                      required
+                    />
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Be specific for better content. Try "Neural Networks" instead of just "AI"
+                    </p>
+                  </div>
+
+                  <Button
+                    type="submit"
+                    disabled={!topic.trim()}
+                    className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 text-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  >
+                    <BookOpen className="mr-2 h-5 w-5" />
+                    Start Learning
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </form>
+
+                {/* Features List */}
+                <div className="mt-8 pt-6 border-t border-gray-200/50 dark:border-gray-700/50">
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 text-center">
+                    What you'll get:
+                  </h3>
+                  <div className="grid grid-cols-3 md:grid-cols-3 gap-4">
+                    <div className="text-center">
+                      <div className="inline-flex p-2 rounded-lg bg-blue-100 dark:bg-blue-900/20 mb-2">
+                        <Brain className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Structured Content</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="inline-flex p-2 rounded-lg bg-green-100 dark:bg-green-900/20 mb-2">
+                        <Target className="h-5 w-5 text-green-600 dark:text-green-400" />
+                      </div>
+                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Key Concepts</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="inline-flex p-2 rounded-lg bg-purple-100 dark:bg-purple-900/20 mb-2">
+                        <Lightbulb className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                      </div>
+                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Practical Examples</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {submittedTopic && (
+          // <div className="max-w-4xl mx-auto">
+          //   <div className="mb-6 flex items-center justify-between">
+          //     <div>
+          //       <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+          //         Learning: <span className="text-orange-600 dark:text-orange-400">{submittedTopic}</span>
+          //       </h2>
+          //       <p className="text-gray-600 dark:text-gray-300">Comprehensive learning materials and resources</p>
+          //     </div>
+          //   </div>
+            <Learning topic={submittedTopic} />
+          // </div>
+        )}
+      </div>
     </div>
-    )
+  )
 }

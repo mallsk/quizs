@@ -12,8 +12,8 @@ type UserData = {
 interface QuizAttemptData {
   userId: string;
   topic: string;
-  questions: any;     // JSON object/array of questions with correct answers
-  userAnswers: any;   // JSON object/array of user-selected answers
+  questions: any; // JSON object/array of questions with correct answers
+  userAnswers: any; // JSON object/array of user-selected answers
   score: number;
 }
 
@@ -45,15 +45,15 @@ export async function findOrCreateUser(user: UserData) {
 
   return newUser;
 }
-export async function findUser(googleId:string){
+export async function findUser(googleId: string) {
   const user = await prisma.user.findUnique({
-    where:{googleId: googleId}
-  })
-  if(user){
+    where: { googleId: googleId },
+  });
+  if (user) {
     return user;
   }
-  if(!user){
-    return null
+  if (!user) {
+    return null;
   }
 }
 export async function createQuizAttempt(data: QuizAttemptData) {
@@ -70,9 +70,9 @@ export async function createQuizAttempt(data: QuizAttemptData) {
   return quizAttempt;
 }
 
-export async function getQuiz(userId:string){
+export async function getQuiz(userId: string) {
   const quizs = await prisma.quizAttempt.findMany({
-    where:{userId}
-  })
-  return quizs
+    where: { userId },
+  });
+  return quizs;
 }

@@ -19,14 +19,23 @@ export async function POST(req: NextRequest) {
     let result = await chat(topic);
 
     if (!result) {
-      return NextResponse.json({ error: "No result from chat" }, { status: 500 });
+      return NextResponse.json(
+        { error: "No result from chat" },
+        { status: 500 }
+      );
     }
 
-    result = result.replace(/```json/, '').replace(/```/, '').trim();
+    result = result
+      .replace(/```json/, "")
+      .replace(/```/, "")
+      .trim();
     const questions = JSON.parse(result);
 
     return NextResponse.json({ questions }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

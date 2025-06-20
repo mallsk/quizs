@@ -13,7 +13,10 @@ export async function POST(req: NextRequest) {
   const { topic, questions, userAnswers, score } = await req.json();
 
   if (!topic || !questions || !userAnswers || score === undefined) {
-    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Missing required fields" },
+      { status: 400 }
+    );
   }
 
   try {
@@ -28,6 +31,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true, quizAttempt }, { status: 201 });
   } catch (error) {
     console.error("Error storing quiz attempt:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

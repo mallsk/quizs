@@ -8,8 +8,8 @@ export async function GET() {
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  
-  if (session?.user){
-    return NextResponse.json({ user : session.user }, { status: 200 });
+
+  if (session?.user) {
+    return NextResponse.json({ user: session.user }, { status: 200 });
   }
 }

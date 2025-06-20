@@ -20,12 +20,18 @@ export async function POST(req: NextRequest) {
     const result = await learn(topic);
 
     if (!result) {
-      return NextResponse.json({ error: "No result from chat" }, { status: 500 });
+      return NextResponse.json(
+        { error: "No result from chat" },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ result }, { status: 200 });
   } catch (error) {
     console.error("Learn API Error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

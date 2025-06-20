@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SessionProviderWrapper from "@/components/SessionProviderWrapper";
+import { ThemeProvider } from "next-themes";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,8 +15,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Quizs",
-  description: "It generates questions based on user topic",
+  title: "Quizs - Personalized Learning Platform",
+  description:
+    "AI-powered quiz generation platform that creates personalized quizzes for any topic. Learn smarter with adaptive difficulty and topic-wise learning.",
+  keywords: "quiz, learning, education, AI, personalized, study, topics",
 };
 
 export default function RootLayout({
@@ -24,12 +27,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SessionProviderWrapper>
-        {children}
+          <ThemeProvider attribute="class">{children}</ThemeProvider>
         </SessionProviderWrapper>
       </body>
     </html>

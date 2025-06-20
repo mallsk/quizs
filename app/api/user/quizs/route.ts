@@ -19,12 +19,18 @@ export async function GET() {
 
     const quizzes = await getQuiz(user.googleId);
     if (!quizzes || quizzes.length === 0) {
-      return NextResponse.json({ error: "No quiz data found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "No quiz data found" },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json({ quizzes: quizzes }, { status: 200 });
   } catch (error) {
     console.error("Error fetching quizzes:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

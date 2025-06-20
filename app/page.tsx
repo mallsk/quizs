@@ -1,10 +1,11 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import LoginButton from "@/components/LoginButton";
 import type { Session } from "next-auth";
-export default async function Home() {
- 
+import Header from "@/components/Header";
+import Hero from "@/components/Hero";
+import Features from "@/components/Features";
+export default async function Landing() {
   const session: Session | null = await getServerSession(authOptions);
 
   if (session?.user) {
@@ -12,10 +13,12 @@ export default async function Home() {
   }
 
   return (
-    <div>
-      <h1>Welcome to the Quiz App!</h1>
-      <p>Please sign in to continue.</p>
-      <LoginButton />
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <Header />
+      <main>
+        <Hero />
+        <Features />
+      </main>
     </div>
   );
 }
