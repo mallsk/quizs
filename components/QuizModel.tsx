@@ -30,7 +30,7 @@ interface QuizModelProps {
   onLoaded?: () => void;
 }
 
-const QUIZ_TIME_SECONDS = 2400;
+const QUIZ_TIME_SECONDS = 600;
 
 const QuizModel = ({ topic, onLoaded }: QuizModelProps) => {
   const [questions, setQuestions] = useState<Question[]>([]);
