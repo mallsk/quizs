@@ -12,7 +12,54 @@ import { Brain, Sparkles, BookOpen, Loader2, ArrowRight } from "lucide-react";
 export default function Quiz() {
   const [topic, setTopic] = useState("");
   const [submittedTopic, setSubmittedTopic] = useState("");
+  const [question, setQuestions] = useState("15");
+  const [language, setLanguage] = useState("english");
   const [loading, setLoading] = useState(false);
+  const suggestions = [
+    // Govt Exams
+    "UPSC Civil Services",
+    "SSC CGL",
+    "IBPS PO",
+    "RRB NTPC",
+    "State PSC Exams",
+    "NDA",
+    "CDS",
+    "Banking Awareness",
+
+    // Law
+    "Indian Constitution",
+    "Fundamental Rights",
+    "IPC Sections",
+    "Legal GK",
+    "Judicial System",
+
+    // Coding
+    "JavaScript",
+    "Python",
+    "C++",
+    "Data Structures",
+    "Algorithms",
+    "ReactJS",
+    "Operating Systems",
+    "DBMS",
+    "Computer Networks",
+
+    // Science & Math
+    "Mathematics",
+    "Algebra",
+    "Geometry",
+    "Trigonometry",
+    "Calculus",
+    "Biology",
+    "Cell Structure",
+    "Genetics",
+    "Chemistry",
+    "Periodic Table",
+    "Organic Chemistry",
+    "Physics",
+    "Motion",
+    "Thermodynamics",
+  ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,7 +89,8 @@ export default function Quiz() {
                 </span>
               </h1>
               <p className="text-xl text-gray-600 dark:text-gray-300 max-w-lg mx-auto">
-                Enter any topic and get a personalized quiz to your learning needs.
+                Enter any topic and get a personalized quiz to your learning
+                needs.
               </p>
             </div>
 
@@ -66,16 +114,94 @@ export default function Quiz() {
                     <Input
                       id="topic"
                       type="text"
+                      list="topicSuggestions"
                       placeholder="e.g., JavaScript, World History, Biology, Mathematics, Current Affairs..."
                       className="w-full px-4 py-3 text-lg bg-white/80 dark:bg-gray-800/80 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:border-orange-400 dark:focus:border-orange-500 focus:ring-2 focus:ring-orange-200 dark:focus:ring-orange-800 transition-all duration-200"
                       value={topic}
-                      onChange={(e) => setTopic(e.target.value)}
+                      onChange={(e) => {
+                        const words = e.target.value.trim().split(/\s+/);
+                        if (words.length <= 3) {
+                          setTopic(e.target.value);
+                        }
+                      }}
                       required
                     />
+                    <datalist id="topicSuggestions">
+                      {suggestions.map((item, index) => (
+                        <option key={index} value={item} />
+                      ))}
+                    </datalist>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
                       Be specific for better questions. Try "React Hooks"
                       instead of just "React"
                     </p>
+                    <div className="space-y-2">
+                      <Label className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                        Select Language
+                      </Label>
+                      <div className="flex gap-6">
+                        <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                          <input
+                            type="radio"
+                            name="language"
+                            value="english"
+                            checked={language === "english"}
+                            onChange={(e) => setLanguage(e.target.value)}
+                            className="accent-orange-500"
+                          />
+                          English
+                        </label>
+                        <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                          <input
+                            type="radio"
+                            name="language"
+                            value="kannada"
+                            checked={language === "kannada"}
+                            onChange={(e) => setLanguage(e.target.value)}
+                            className="accent-orange-500"
+                          />
+                          Kannada
+                        </label>
+                      </div>
+                      <Label className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                        Select How many questions want
+                      </Label>
+                      <div className="flex gap-6">
+                        <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                          <input
+                            type="radio"
+                            name="question"
+                            value="10"
+                            checked={question === "10"}
+                            onChange={(e) => setQuestions(e.target.value)}
+                            className="accent-orange-500"
+                          />
+                          10
+                        </label>
+                        <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                          <input
+                            type="radio"
+                            name="questions"
+                            value="15"
+                            checked={question === "15"}
+                            onChange={(e) => setQuestions(e.target.value)}
+                            className="accent-orange-500"
+                          />
+                          15
+                        </label>
+                        <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                          <input
+                            type="radio"
+                            name="questions"
+                            value="20"
+                            checked={question === "20"}
+                            onChange={(e) => setQuestions(e.target.value)}
+                            className="accent-orange-500"
+                          />
+                          20
+                        </label>
+                      </div>
+                    </div>
                   </div>
 
                   <Button
@@ -135,7 +261,12 @@ export default function Quiz() {
           //       <p className="text-gray-600 dark:text-gray-300">Answer all questions to see your results</p>
           //     </div>
           //   </div>
-          <QuizModel topic={submittedTopic} onLoaded={onQuizLoaded} />
+          <QuizModel
+            topic={submittedTopic}
+            language={language}
+            question={question}
+            onLoaded={onQuizLoaded}
+          />
           // </div>
         )}
       </div>

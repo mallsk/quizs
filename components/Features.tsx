@@ -98,12 +98,12 @@ export default function Features() {
               of personalized quizzes.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-semibold px-8 py-4 rounded-full shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-105 text-lg">
+              {/* <button className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-semibold px-8 py-4 rounded-full shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-105 text-lg">
                 Get Started Free
               </button>
               <button className="border-2 border-orange-300 dark:border-orange-600 text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 font-semibold px-8 py-4 rounded-full text-lg backdrop-blur-sm transition-all duration-300">
                 Learn More
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

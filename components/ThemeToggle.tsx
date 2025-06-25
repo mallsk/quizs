@@ -3,31 +3,23 @@
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "./ui/button";
+import { useEffect, useState } from "react";
 
 export default function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
-  const switchTheme = () => {
-    switch (theme) {
-      case "light":
-        setTheme("dark");
-        break;
-      case "dark":
-        setTheme("light");
-        break;
-      default:
-        break;
-    }
-  };
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  const toggleTheme = () => {
-    switchTheme();
-    //   alert("ok");
-  };
+  if (!mounted) return null;
+
+  const isDark = resolvedTheme === "dark";
 
   return (
     <Button
-      onClick={toggleTheme}
+      onClick={() => setTheme(isDark ? "light" : "dark")}
       size="icon"
       className="group rounded-lg border-none bg-transparent shadow-none hover:bg-blue-600/5"
     >

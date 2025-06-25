@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { Redirect } from "@/components/Redirect";
 import Details from "@/components/Details";
 import Quizs from "@/components/Quizs";
+import Footer from "@/components/Footer";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);

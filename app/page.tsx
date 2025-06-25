@@ -5,6 +5,7 @@ import type { Session } from "next-auth";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
+import Footer from "@/components/Footer";
 export default async function Landing() {
   const session: Session | null = await getServerSession(authOptions);
 
@@ -19,6 +20,7 @@ export default async function Landing() {
         <Hero />
         <Features />
       </main>
+      <Footer />
     </div>
   );
 }

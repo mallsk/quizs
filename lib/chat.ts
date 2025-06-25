@@ -2,8 +2,8 @@ import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-export default async function chat(topic: string) {
-  const prompt = `Generate 10 multiple-choice questions on ${topic}. The response should be a JSON array. Each object in the array should follow this format:{
+export default async function chat(topic: string,language : string, question:string) {
+  const prompt = `Generate ${question} multiple-choice questions on ${topic} in ${language}. The response should be a JSON array. Each object in the array should follow this format:{
   "question": "Your question?",
   "options": {
     "a": "Option A",

@@ -25,20 +25,21 @@ interface Question {
 interface QuizResponse {
   questions: Question[];
 }
+
 interface QuizModelProps {
   topic: string;
   onLoaded?: () => void;
+  language: string;
+  question: string;
 }
 
 const QUIZ_TIME_SECONDS = 600;
 
-const QuizModel = ({ topic, onLoaded }: QuizModelProps) => {
+const QuizModel = ({ topic, onLoaded, language, question }: QuizModelProps) => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedAnswers, setSelectedAnswers] = useState<{
-    [key: number]: string;
-  }>({});
+  const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: string }>({});
   const [showResults, setShowResults] = useState(false);
   const [timeLeft, setTimeLeft] = useState(QUIZ_TIME_SECONDS);
   const [showReadyMessage, setShowReadyMessage] = useState(false);
@@ -46,11 +47,16 @@ const QuizModel = ({ topic, onLoaded }: QuizModelProps) => {
   const [submitted, setSubmitted] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
   const fetchedRef = useRef(false);
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const hasSubmittedRef = useRef(false);
+  const selectedAnswersRef = useRef<{ [key: number]: string }>({});
 
-  // Animate the progress bar while loading
+  useEffect(() => {
+    selectedAnswersRef.current = selectedAnswers;
+  }, [selectedAnswers]);
+
   useEffect(() => {
     if (loading) {
       progressIntervalRef.current = setInterval(() => {
@@ -58,12 +64,10 @@ const QuizModel = ({ topic, onLoaded }: QuizModelProps) => {
       }, 300);
     } else {
       setProgress(100);
-      if (progressIntervalRef.current)
-        clearInterval(progressIntervalRef.current);
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
     }
     return () => {
-      if (progressIntervalRef.current)
-        clearInterval(progressIntervalRef.current);
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
     };
   }, [loading]);
 
@@ -72,7 +76,7 @@ const QuizModel = ({ topic, onLoaded }: QuizModelProps) => {
       try {
         const response = await axios.post<QuizResponse>(
           "/api/user/quiz",
-          { topic },
+          { topic, language, question },
           { withCredentials: true }
         );
         setQuestions(response.data.questions);
@@ -90,48 +94,80 @@ const QuizModel = ({ topic, onLoaded }: QuizModelProps) => {
       fetchQuestions();
       fetchedRef.current = true;
     }
-  }, [topic, onLoaded]);
+  }, [topic, onLoaded, language, question]);
+
+  const handleSubmit = async () => {
+    if (hasSubmittedRef.current) return;
+    hasSubmittedRef.current = true;
+    setSubmitted(true);
+    setShowResults(true);
+
+    if (timerRef.current) clearInterval(timerRef.current);
+
+    const answers = selectedAnswersRef.current;
+
+    const score = Object.entries(answers).filter(
+      ([index, ans]) => questions[Number(index)]?.correct === ans
+    ).length;
+
+    try {
+      await axios.post(
+        "/api/user/quiz/submit",
+        {
+          topic,
+          questions,
+          userAnswers: answers,
+          score,
+        },
+        { withCredentials: true }
+      );
+    } catch (error) {
+      console.error("Failed to save quiz results", error);
+    }
+  };
 
   useEffect(() => {
     if (loading || showResults) {
       if (timerRef.current) clearInterval(timerRef.current);
       return;
     }
+
     timerRef.current = setInterval(() => {
-      setTimeLeft((time) => {
-        if (time <= 1) {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
           clearInterval(timerRef.current!);
           handleSubmit();
           return 0;
         }
-        return time - 1;
+        return prevTime - 1;
       });
     }, 1000);
+
     return () => clearInterval(timerRef.current!);
   }, [loading, showResults]);
 
   if (push) return <Redirect to="/dashboard" />;
 
   const getScorePercentage = () => {
-    const correctAnswers = Object.entries(selectedAnswers).filter(
-      ([index, ans]) => questions[Number(index)].correct === ans
+    const correct = Object.entries(selectedAnswers).filter(
+      ([i, a]) => questions[Number(i)].correct === a
     ).length;
-    return Math.round((correctAnswers / questions.length) * 100);
+    return Math.round((correct / questions.length) * 100);
   };
 
-  const getScoreColor = (percentage: number) => {
-    if (percentage >= 80) return "text-green-600 dark:text-green-400";
-    if (percentage >= 60) return "text-yellow-600 dark:text-yellow-400";
-    return "text-red-600 dark:text-red-400";
-  };
+  const getScoreColor = (percent: number) =>
+    percent >= 80
+      ? "text-green-600 dark:text-green-400"
+      : percent >= 60
+      ? "text-yellow-600 dark:text-yellow-400"
+      : "text-red-600 dark:text-red-400";
 
-  const getBadgeColor = (percentage: number) => {
-    if (percentage >= 80)
-      return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400";
-    if (percentage >= 60)
-      return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400";
-    return "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400";
-  };
+  const getBadgeColor = (percent: number) =>
+    percent >= 80
+      ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
+      : percent >= 60
+      ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400"
+      : "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400";
 
   const handleOptionChange = (option: string) => {
     if (showResults) return;
@@ -150,39 +186,12 @@ const QuizModel = ({ topic, onLoaded }: QuizModelProps) => {
       setCurrentQuestion(currentQuestion + 1);
   };
 
-  const handleSubmit = async () => {
-    if (submitted) return;
-    setSubmitted(true);
-    setShowResults(true);
-
-    if (timerRef.current) clearInterval(timerRef.current);
-
-    const score = Object.entries(selectedAnswers).filter(
-      ([index, ans]) => questions[Number(index)].correct === ans
-    ).length;
-
-    try {
-      await axios.post(
-        "/api/user/quiz/submit",
-        {
-          topic,
-          questions,
-          userAnswers: selectedAnswers,
-          score,
-        },
-        { withCredentials: true }
-      );
-    } catch (error) {
-      console.error("Failed to save quiz results", error);
-    }
-  };
-
   const getAnswerColor = (optionKey: string) => {
     if (!showResults) return "";
-    const correctAnswer = questions[currentQuestion].correct;
+    const correct = questions[currentQuestion].correct;
     const selected = selectedAnswers[currentQuestion];
-    if (optionKey === correctAnswer) return "bg-green-300 font-bold";
-    if (optionKey === selected && optionKey !== correctAnswer)
+    if (optionKey === correct) return "bg-green-300 font-bold";
+    if (optionKey === selected && optionKey !== correct)
       return "bg-red-300 font-bold";
     return "";
   };
@@ -453,8 +462,6 @@ const QuizModel = ({ topic, onLoaded }: QuizModelProps) => {
                       </div>
                     </div>
                   </div>
-
-                  
 
                   <div className="mt-6">
                     <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">

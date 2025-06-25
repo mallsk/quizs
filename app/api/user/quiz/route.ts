@@ -10,13 +10,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
   }
 
-  const { topic } = await req.json();
+  const { topic, language, question } = await req.json();
 
   if (!topic) {
     return NextResponse.json({ error: "Topic is required" }, { status: 400 });
   }
   try {
-    let result = await chat(topic);
+    let result = await chat(topic,language, question);
 
     if (!result) {
       return NextResponse.json(
